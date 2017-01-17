@@ -9,7 +9,19 @@
   </head>
   <body>
     <script type="text/javascript">
-      
+      var maximJs;
+
+      var maxiAudio = new maximJs.maxiAudio();
+      var myWave = new maximJs.maxiOsc();
+      var myWave2 = new maximJs.maxiOsc();
+      maxiAudio.init();
+
+      maxiAudio.play = function() {
+        this.output = myWave.sinewave(
+          myWave2.sinewave(1) * 100 + 300 //200~400
+        );
+      }
+
     </script>
   </body>
 </html>
