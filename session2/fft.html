@@ -1,0 +1,98 @@
+
+<html>
+
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <title>
+        Javascript Audio Processing
+    </title>
+
+    <!-- <link rel="stylesheet" type="text/css" href="javascript-processing_files/simple.css"> -->
+
+    <!-- <script src="../libs/maxiLib_maxiFFT.js"></script> -->
+
+    <script src="http://doc.gold.ac.uk/~mus02mg/_maxiLib.js"></script>
+
+
+</head>
+
+<body>
+
+    <h1> FFT </h1>
+
+    <p>
+        Spectrum
+    </p>
+
+    <canvas id="myCanvas" width="800" height="600">
+
+        <!-- It's a good idea to warn people whose browsers don't support the tag -->
+
+        Your browser does not support the canvas element.
+    </canvas>
+
+</body>
+<script type="text/javascript">
+
+    var maximJs;
+    var audio = new maximJs.maxiAudio();
+
+    audio.init();
+
+    var fft = new maximJs.maxiFFT();
+    // var ifft = new maximJs.maxiIFFT();
+    // var mffc = new maximJs.maxiMFFC();
+
+    var osc = new maximJs.maxiOsc();
+    var osc2 = new maximJs.maxiOsc();
+    var osc3 = new maximJs.maxiOsc();
+
+    var fftSize = 1024;
+    var magMult = 6;
+
+    var count = 0;
+
+    var barsBottom = 600;
+    var barsLeft = 0;
+    var output = [];
+
+    // This gets the window in the browser
+    var canvas = document.getElementById("myCanvas");
+    // This creates a 2d drawing context in it.
+    var context = canvas.getContext("2d");
+    fft.setup(fftSize, 512, 256);
+
+    //PLAY FUNCTION
+
+    audio.play = function() {
+      var wave = osc.triangle(400);
+      this.output = wave * 0.1;
+
+      if (fft.process(wave)) {
+          fft.magsToDB();
+      }
+      count++; // increment counter
+
+    };
+
+    //DRAW FUNCTION
+
+    function draw() {
+
+        context.clearRect(0, 0, 700, 700);
+
+        for (var i = 0; i < fftSize / 2; i++) {
+            context.beginPath();
+            context.fillStyle = "#FF0000";
+            context.rect(barsLeft + i, barsBottom-200, 1, -(fft.getMagnitude(i) * magMult));
+            context.fill();
+            // context.stroke();
+            context.closePath();
+        }
+        //console.log(count/44100);
+    }
+
+    setInterval(draw, 10);
+</script>
+
+</html>

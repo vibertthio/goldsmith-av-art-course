@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>waveform</title>
+    <script src="http://doc.gold.ac.uk/~mus02mg/_maxiLib.js"></script>
+  </head>
+  <body>
+
+    <canvas id="canvas" width="300" height="300"></canvas>
+    <script type="text/javascript">
+      var degree = 1024;
+      var drawoutput = new Array(1024);
+      var counter = 0;
+      var osc = new maximJs.maxiOsc();
+      var osc2 = new maximJs.maxiOsc();
+      var osc3 = new maximJs.maxiOsc();
+
+      var audio = new maximJs.maxiAudio();
+      audio.init();
+
+      audio.play() = function() {
+        counter++;
+
+        var sum = osc.sinewave(300);
+        this.output = sum;
+        drawoutput[counter % 1024] = this.output;
+      }
+
+      var canvas = document.querySelector("canvas");
+      var width = window.innerWidth;
+      var height = window.innerHeight / 2;
+      var context = canvas.getContext("2d");
+
+      canvas.setAttribute("width", width);
+      canvas.setAttribute("height", height);
+
+      var spacing = width / 1024;
+
+      function draw() {
+        context.clearRect(0, 0, width, height);
+
+        for(var i = 0; i < 1024; i++) {
+          context.beginPath();
+          context.moveTo(i * spacing, height / 2);
+          context.lineTo(i * spacing, drawoutput[i] * height / 4);
+          context.stroke();
+          context.closePath();
+        }
+      }
+
+    </script>
+  </body>
+</html>

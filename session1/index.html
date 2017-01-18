@@ -1,15 +1,27 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8">
-    <title>session 1</title>
-    <script src="http://doc.gold.ac.uk/~mus02mg/_maxiLib.js">
+<head>
+  <meta charset="utf-8">
+  <title>session 1</title>
+  <script src="http://doc.gold.ac.uk/~mus02mg/_maxiLib.js">
+  </script>
+</head>
+<body>
+  <h1> FFT </h1>
 
-    </script>
-  </head>
-  <body>
-    <script type="text/javascript">
-      var maximJs;
+  <p>
+      Spectrum
+  </p>
+
+  <canvas id="myCanvas" width="800" height="600">
+
+      <!-- It's a good idea to warn people whose browsers don't support the tag -->
+
+      Your browser does not support the canvas element.
+  </canvas>
+</body>
+
+  <script type="text/javascript">
 
       var maxiAudio = new maximJs.maxiAudio();
       var myWave = new maximJs.maxiOsc();
@@ -17,11 +29,10 @@
       maxiAudio.init();
 
       maxiAudio.play = function() {
-        this.output = myWave.sinewave(
+        this.output = myWave.sinewave( //255
           myWave2.sinewave(1) * 100 + 300 //200~400
         );
       }
 
     </script>
-  </body>
 </html>
