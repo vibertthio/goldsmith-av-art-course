@@ -19,7 +19,7 @@
       var audio = new maximJs.maxiAudio();
       audio.init();
 
-      audio.play() = function() {
+      audio.play = function() {
         counter++;
 
         var sum = osc.sinewave(300);
@@ -29,7 +29,7 @@
 
       var canvas = document.querySelector("canvas");
       var width = window.innerWidth;
-      var height = window.innerHeight / 2;
+      var height = window.innerHeight;
       var context = canvas.getContext("2d");
 
       canvas.setAttribute("width", width);
@@ -39,16 +39,16 @@
 
       function draw() {
         context.clearRect(0, 0, width, height);
-
         for(var i = 0; i < 1024; i++) {
           context.beginPath();
           context.moveTo(i * spacing, height / 2);
-          context.lineTo(i * spacing, drawoutput[i] * height / 4);
+          context.lineTo(i * spacing, height / 2 + drawoutput[i] * height / 4);
           context.stroke();
           context.closePath();
         }
       }
 
+      setInterval(draw, 100);
     </script>
   </body>
 </html>

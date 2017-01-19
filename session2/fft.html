@@ -65,8 +65,21 @@
     //PLAY FUNCTION
 
     audio.play = function() {
-      var wave = osc.triangle(400);
-      this.output = wave * 0.1;
+      //Demo
+      var wave = osc.sinewave(440);
+
+      //AM
+      // var wave = osc.sinewave(5000) *
+      //            ( osc2.sinewave(500 + 200 *
+      //              osc3.sinewave(0.5)) * 0.5 + 0.5
+      //            );
+
+      //FM
+      // var wave = osc.sinewave(1000 +
+      //   osc2.sinewave(1500) * 1000
+      // );
+
+      this.output = wave * 0.2;
 
       if (fft.process(wave)) {
           fft.magsToDB();

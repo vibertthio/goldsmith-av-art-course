@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>clock</title>
+    <script src="https://code.createjs.com/createjs-2015.11.26.min.js"></script>
+    <script src="http://doc.gold.ac.uk/~mus02mg/_maxiLib.js"></script>
+  </head>
+  <body>
+    <canvas id="demoCanvas" width="500" height="200"></canvas>
+    <script type="text/javascript">
+
+
+
+      var maximJs;
+      var audio = new maximJs.maxiAudio();
+      audio.init();
+
+      var osc = new maximJs.maxiOsc();
+      var clk = new maximJs.maxiClock();
+
+      var freq;
+
+      clk.setTicksPerBeat(1);
+      clk.setTempo(120);
+
+      freq = 300;
+
+      // Drawin
+      var stage = new createjs.Stage("demoCanvas");
+      var circle = new createjs.Shape();
+      circle.graphics.beginFill("Crimson").drawCircle(0, 0, 50);
+      circle.x = 100;
+      circle.y = 100;
+      stage.addChild(circle);
+      createjs.Ticker.setFPS(60);
+      createjs.Ticker.addEventListener("tick", stage);
+      
+      audio.play = function() {
+        clk.ticker();
+        if (clk.tick) {
+          freq += 100;
+          if (freq > 900) {
+            freq = 300;
+          }
+
+          createjs.Tween.get(circle, {loop: false})
+          .to({alpha: 0}, 0)
+          .to({alpha: 1}, 500, createjs.Ease.getPowInOut(2))
+        }
+        this.output = osc.sinewave(freq);
+      }
+
+
+
+      stage.addEventListener('click', function(event) {
+        createjs.Tween.get(circle, {loop: false})
+        .to({alpha: 0}, 0)
+        .to({alpha: 1}, 500, createjs.Ease.getPowInOut(2))
+      }, false);
+
+
+    </script>
+
+  </body>
+</html>

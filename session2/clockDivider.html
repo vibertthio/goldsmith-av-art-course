@@ -1,0 +1,98 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Clock Divider</title>
+<script src="http://doc.gold.ac.uk/~mus02mg/_maxiLib.js"></script>
+<script>
+
+// Converts MIDI note value to Frequency (Hz)
+var pchToFreq = function(pch) {
+    return 440 * Math.pow(2, (pch - 69) / 12);
+};
+
+// Step Sequencer that uses MaxiClock
+var ClockStep = function(clock, steps) {
+    this.clock = clock;  // Clock must contain boolean tick property
+    this.steps = steps;
+    this.index = 0;
+    this.output = 0;
+};
+ClockStep.prototype.update = function() {
+    if (this.clock.tick) {
+        this.index = (this.index + 1) % this.steps.length;
+        var stepValue = this.steps[this.index];
+
+        // If value is a function, run function and return output
+        if (typeof(stepValue) === "function") {
+            this.output = stepValue();
+        }
+        // Else return the value
+        else {
+            this.output = stepValue;
+        }
+    }
+};
+
+// Clock Divider
+var ClockDivider = function(clock, div) {
+    this.clock = clock;
+    this.index = -1;
+    this.tick = false;
+    this.setDivider(div);
+};
+ClockDivider.prototype.ticker = function() {
+    if (this.clock.tick) {
+        this.index = (this.index + 1) % this.div;
+    }
+    this.tick = this.index === 0 && this.clock.tick;
+};
+ClockDivider.prototype.setDivider = function(div) {
+    this.div = parseInt(div);  // Must be integer
+};
+
+// Setup Maximilian
+var maximJs;
+var maxiAudio = new maximJs.maxiAudio();
+maxiAudio.init();
+
+// Clock
+var clock = new maximJs.maxiClock();
+clock.setTicksPerBeat(2);
+clock.setTempo(120);
+
+// ClockDivider
+var clockDivider = new ClockDivider(clock, 3);
+
+// Oscillators
+var osc1 = new maximJs.maxiOsc();
+var osc2 = new maximJs.maxiOsc();
+
+// Recursive Iterator Step Sequencer
+var sequence = [60, 62, 64, 65, 67, 69, 71, 72];
+var step = new ClockStep(clock, sequence);
+var step2 = new ClockStep(clockDivider, sequence);
+
+maxiAudio.play = function() {
+    // Update Instruments
+    clock.ticker();
+    clockDivider.ticker();
+    step.update();
+    step2.update();
+
+    // Generate voices
+    var mixer = 0;
+    var voice1 = osc1.triangle(pchToFreq(step.output));
+    var voice2 = osc2.triangle(pchToFreq(step2.output));
+    mixer = voice1 + voice2;
+
+    // Send audio to DAC / speakers
+    this.output = mixer * 0.25;
+};
+
+</script>
+</head>
+<body>
+    <h1>Clock Divider</h1>
+</body>
+</html>
