@@ -19,16 +19,19 @@
       var osc = new maximJs.maxiOsc();
       var clk = new maximJs.maxiClock();
 
-      var freq;
+      // var sequence = [200, 300, 400, 100, 120, 540, 300, 270];
+      var sequence = [200, 300, 400, 100];
 
       clk.setTicksPerBeat(4);
       clk.setTempo(60);
 
-      freq = 300;
-
       // Drawin
       var stage = new createjs.Stage("demoCanvas");
       var circle = new createjs.Shape();
+      var amp = {
+        value: 0
+      };
+
       circle.graphics.beginFill("Crimson").drawCircle(0, 0, 50);
       circle.x = 100;
       circle.y = 100;
@@ -36,24 +39,25 @@
       createjs.Ticker.setFPS(60);
       createjs.Ticker.addEventListener("tick", stage);
 
+      var prevOutput = 0;
+      var cutoff = Math.pow(10, -1.5);
+
       audio.play = function() {
         clk.ticker();
 
         if (clk.tick) {
-          freq += 100;
-          if (freq > 900) {
-            freq = 300;
-          }
 
-          // console.log(clk.playHead % clk.ticks);
-
+          createjs.Tween.get(amp)
+          .to({value: 1}, 0)
+          .to({value: 0}, 200);
 
           createjs.Tween.get(circle, {loop: false})
           .to({alpha: 0}, 0)
-          .to({alpha: 1}, 200, createjs.Ease.getPowInOut(2))
+          .to({alpha: 1}, 500, createjs.Ease.getPowInOut(2))
         }
-
-        this.output = osc.sinewave(freq) * 0.1;
+        var input = osc.sawn(sequence[clk.playHead % sequence.length]);
+        prevOutput =  prevOutput + cutoff * (input - prevOutput);
+        this.output = prevOutput * 0.5;
       }
 
 

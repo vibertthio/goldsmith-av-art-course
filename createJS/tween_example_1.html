@@ -20,7 +20,17 @@
       createjs.Ticker.setFPS(60);
       createjs.Ticker.addEventListener("tick", stage);
 
+      var test = {
+        x: 0,
+        y: 0
+      }
+
+
       stage.addEventListener('click', function(event) {
+        createjs.Tween.get(test)
+        .to({x: 0, y:0})
+        .to({x: 10, y:10}, 1000);
+
         createjs.Tween.get(circle, {loop: false})
         .to({alpha: 0, y: 100}, 0)
         .to({alpha: 1, y: 100}, 500, createjs.Ease.getPowInOut(2))
@@ -33,6 +43,15 @@
       function bang() {
         console.log("bang!");
       }
+
+      draw()
+      function draw() {
+        requestAnimationFrame(draw);
+        console.log(test);
+
+      }
+
+
     </script>
   </body>
 </html>
