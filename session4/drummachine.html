@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>load sample</title>
+    <script src="http://doc.gold.ac.uk/~mus02mg/_maxiLib.js"></script>
+
+  </head>
+  <body>
+    <script type="text/javascript">
+      var audio = new maximJs.maxiAudio();
+      audio.init();
+
+      var clk = new maximJs.maxiClock();
+      clk.setTicksPerBeat(4);
+      clk.setTempo(60);
+
+      var osc = new maximJs.maxiOsc();
+      var osc2 = new maximJs.maxiOsc();
+
+      var f1 = new maximJs.maxiFilter();
+
+      var kick = new maximJs.maxiSample();
+      audio.loadSample("../sample/kick.wav", kick);
+      var hh = new maximJs.maxiSample();
+      audio.loadSample("../sample/hihat.wav", hh);
+      var sn = new maximJs.maxiSample();
+      audio.loadSample("../sample/snare.wav", sn);
+
+
+      audio.play = function() {
+        clk.ticker();
+        var output = 0;
+
+        if(clk.tick) {
+          var b = clk.playHead % clk.ticks;
+          console.log();
+          if ( b==0 ) {
+            kick.trigger();
+          }
+
+          if ( b==2 ) {
+            sn.trigger();
+          }
+
+          hh.trigger();
+
+        }
+
+        output = kick.playOnce(1)
+                 +sn.playOnce(1)
+                 +hh.playOnce(1);
+
+        output = f1.lopass(output, 0.1);
+        this.output = output * 0;
+      }
+    </script>
+  </body>
+</html>

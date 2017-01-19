@@ -12,26 +12,36 @@
       audio.init();
 
       var clk = new maximJs.maxiClock();
-      clk.setTicksPerBeat(1);
+      clk.setTicksPerBeat(2);
       clk.setTempo(120);
 
-      var phasor = new maximJs.maxiOsc();
+      var osc = new maximJs.maxiOsc();
+      var osc2 = new maximJs.maxiOsc();
+
+      var f1 = new maximJs.maxiFilter();
 
       var sample = new maximJs.maxiSample();
       audio.loadSample("../sample/eg.wav", sample);
+
+      var para1 = 0;
 
       audio.play = function() {
         clk.ticker();
 
         if(clk.tick) {
-          sample.trigger();
+          // sample.trigger();
           console.log("bang!");
           // clk.setTicksPerBeat(1+Math.random() * 3);
+          para1 = (para1 + 1) % 8 ;
         }
 
-        var wave = sample.play(-0.5, 0, 220500);
+
+
+        // var wave = sample.play(-0.3, 0, 441000);
         // var wave = sample.playOnce(1);
-        this.output = wave * 0;
+        var wave = sample.play(osc.triangle(8+para1));
+        wave = f1.lopass(wave, 0.1);
+        this.output = wave * 0.1;
       }
     </script>
   </body>
