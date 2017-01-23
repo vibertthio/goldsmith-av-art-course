@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>waveform</title>
+    <script src="http://doc.gold.ac.uk/~mus02mg/_maxiLib.js"></script>
+  </head>
+  <body>
+
+    <canvas id="canvas" width="300" height="300"></canvas>
+    <script type="text/javascript">
+      var index = 2;
+      var counter = 0;
+      var osc = new maximJs.maxiOsc();
+      var osc2 = new maximJs.maxiOsc();
+      var osc3 = new maximJs.maxiOsc();
+
+      var audio = new maximJs.maxiAudio();
+      audio.init();
+
+      audio.play = function() {
+        counter++;
+
+        var sum = osc.sinewave(bufferFreq *
+                  osc2.sinewave(bufferFreq * index) *
+                  osc3.sinewave(0.025)*50);
+        this.output = sum * 0.1;
+        drawoutput[counter % 1024] = this.output * 3000;
+      }
+
+      var bufferSize = 1024;
+      var bufferFreq = 44100 / bufferSize;
+      var TWO_PI = Math.PI * 2;
+      var drawoutput = new Array(bufferSize);
+
+      var canvas = document.querySelector("canvas");
+      var width = window.innerWidth;
+      var height = window.innerHeight;
+      var context = canvas.getContext("2d");
+
+      canvas.setAttribute("width", width);
+      canvas.setAttribute("height", height);
+
+      var spacing = TWO_PI / bufferSize;
+      // context.translate(width/2, height/2);
+
+      function draw() {
+
+        context.clearRect(0, 0, width, height);
+        for(var i = 0; i < bufferSize; i++) {
+          context.beginPath();
+          context.moveTo(width/2, height/2);
+          context.lineTo(width/2 + drawoutput[i] * Math.cos(spacing * i),
+                         height/2 + drawoutput[i] * Math.sin(spacing * i));
+          // context.lineTo(100 * Math.cos(spacing * i),
+          //                100 * Math.sin(spacing * i));
+          context.stroke();
+          context.closePath();
+        }
+      }
+
+      setInterval(draw, 100);
+    </script>
+  </body>
+</html>
