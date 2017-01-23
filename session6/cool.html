@@ -9,7 +9,7 @@
 
     <canvas id="canvas" width="300" height="300"></canvas>
     <script type="text/javascript">
-      var index = 2;
+      var index = 6;
       var counter = 0;
       var osc = new maximJs.maxiOsc();
       var osc2 = new maximJs.maxiOsc();
@@ -21,9 +21,9 @@
       audio.play = function() {
         counter++;
 
-        var sum = osc.sinewave(bufferFreq *
+        var sum = osc.sinewave(bufferFreq * 1 +
                   osc2.sinewave(bufferFreq * index) *
-                  osc3.sinewave(0.025)*50);
+                  osc3.sinewave(0.025)*1000);
         this.output = sum * 0.1;
         drawoutput[counter % 1024] = this.output * 3000;
       }
