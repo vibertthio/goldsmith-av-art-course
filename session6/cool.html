@@ -9,7 +9,7 @@
 
     <canvas id="canvas" width="300" height="300"></canvas>
     <script type="text/javascript">
-      var index = 6;
+      var index = 1;
       var counter = 0;
       var osc = new maximJs.maxiOsc();
       var osc2 = new maximJs.maxiOsc();
@@ -22,10 +22,10 @@
         counter++;
 
         var sum = osc.sinewave(bufferFreq * 1 +
-                  osc2.sinewave(bufferFreq * index) *
-                  osc3.sinewave(0.025)*1000);
+                  osc2.triangle(bufferFreq * index) *
+                  osc3.sinewave(0.025)*500);
         this.output = sum * 0.1;
-        drawoutput[counter % 1024] = this.output * 3000;
+        drawoutput[counter % 1024] = this.output;
       }
 
       var bufferSize = 1024;
@@ -42,18 +42,22 @@
       canvas.setAttribute("height", height);
 
       var spacing = TWO_PI / bufferSize;
-      // context.translate(width/2, height/2);
+      var rotate = 0.01;
+      var size = 3000;
+      var limit = 200;
+      context.translate(width/2, height/2);
 
       function draw() {
-
-        context.clearRect(0, 0, width, height);
+        rotate += 0.01;
+        // context.rotate(Math.sin(rotate)/100);
+        context.clearRect(-width/2, -height/2, width, height);
         for(var i = 0; i < bufferSize; i++) {
           context.beginPath();
-          context.moveTo(width/2, height/2);
-          context.lineTo(width/2 + drawoutput[i] * Math.cos(spacing * i),
-                         height/2 + drawoutput[i] * Math.sin(spacing * i));
-          // context.lineTo(100 * Math.cos(spacing * i),
-          //                100 * Math.sin(spacing * i));
+          context.moveTo(0, 0);
+          var amp = Math.min(drawoutput[i] * size, limit);
+          context.lineTo(amp * Math.cos(spacing * i),
+                         amp * Math.sin(spacing * i));
+
           context.stroke();
           context.closePath();
         }
